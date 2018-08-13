@@ -1,6 +1,7 @@
 #!/usr/bin/env crystal
 
 require "router"
+require "json"
 
 # Rebase API server
 
