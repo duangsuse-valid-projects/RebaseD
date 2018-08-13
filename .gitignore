@@ -1,5 +1,6 @@
 # Crystal deps
 lib/
+bin/
 
 # Binary
 rebased

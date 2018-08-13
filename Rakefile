@@ -41,7 +41,7 @@ end
 
 # Clean files
 task :clean do
-  rm_rf 'rebased rebased-unit'
+  sh 'rm -f rebased rebased-unit'
 end
 
 # Clean deps
