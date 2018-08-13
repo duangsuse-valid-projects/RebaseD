@@ -1,0 +1,8 @@
+# Crystal deps
+lib/
+
+# Binary
+rebased
+
+# Tests
+rebased-unit

@@ -1,0 +1,18 @@
+# Copyright(C) 2018 duangsuse
+
+# License: AGPL-3.0
+# Author: duangsuse
+
+[Unit]
+Description=A RESTful API for everyone. Open Source.
+After=network.target
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory=/root/
+ExecStart=/root/rebased
+Restart=on-failure
+RestartSec=2
+Environment=REBASED_HOST=0.0.0.0
+Environment=REBASED_PORT=80

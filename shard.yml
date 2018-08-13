@@ -1,0 +1,34 @@
+# Copyright(C) 2018 duangsuse
+
+# License: AGPL-3.0
+# Author: duangsuse
+
+name: rebase-daemon
+version: 0.1.0
+license: AGPL-3.0
+
+crystal: 0.25.1
+
+description: |
+  API Server for Rebase API specification
+
+authors:
+  - duangsuse <fedora-opensuse@outlook.com>
+
+dependencies:
+  router:
+    github: tbrand/router.cr
+
+development_dependencies:
+  cossack:
+    github: crystal-community/cossack
+    version: ~> 0.1
+
+targets:
+  rebased:
+    main: rebased.cr
+  spec:
+    main: rebased-unit.cr
+
+executables:
+  - rebased
