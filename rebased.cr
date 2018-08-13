@@ -184,13 +184,13 @@ class RebaseServer
     end
 
     # Program version
-    get "/version" do |ctx|
+    get "/server-version" do |ctx|
       text(ctx, VERSION)
       next ctx
     end
 
     # API version
-    get "/api-version" do |ctx|
+    get "/version" do |ctx|
       text(ctx, API_VERSION)
       next ctx
     end

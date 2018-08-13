@@ -1,0 +1,59 @@
+# Copyright(C) 2018 duangsuse
+# A RESTful API for everyone. Open Source.
+# Licensed under CC-BY
+
+# Fit OpenAPI 3.0.0 standards
+openapi: 3.0.0
+
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/duangsuse/RebaseApi/0.7.2
+  - description: Drakeet.me offical service
+    url: https://api.drakeet.com/rebase
+  - description: RebaseD offical service
+    url: https://rebase-api.popf.rip/
+
+# API Document informations
+info:
+  version: '0.7.2'
+  title: Microblogging open API for everyone
+  description: 'A RESTful API for everyone. Open Source: https://github.com/duangsuse/RebaseD'
+  contact:
+    name: duangsuse
+    email: fedora-opensuse@outlook.com
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    
+# API Tags
+tags:
+  - name: misc
+    description: Misc APIs
+  - name: user
+    description: Rebase users
+  - name: category
+    description: Categories
+  - name: feed
+    description: Microblogging post
+
+paths: {}
+
+externalDocs:
+  description: RebaseD Project API document
+  url: https://github.com/duangsuse/RebaseD/blob/master/rebase-api.md
+
+components:
+  schemas:
+    User:
+      type: object
+    Category:
+      type: object
+    Feed:
+      type: object
+  requestBodies:
+  securitySchemes:
+    rebase_hash:
+      type: apiKey
+      name: Authorization
+      in: header
