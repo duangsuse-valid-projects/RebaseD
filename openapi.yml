@@ -47,13 +47,119 @@ components:
   schemas:
     User:
       type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        description:
+          type: string
     Category:
       type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        rank:
+          type: integer
+          format: int32 >0
     Feed:
       type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        url:
+          type: string
+          format: url
+        cover_url:
+          type: string
+          format: url
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        published_at:
+          type: string
+          format: date-time
+        owner:
+          type: string
+        category:
+          type: string
+        _id:
+          type: string
   requestBodies:
+    MarkdownRender:
+      description: Markdown text to render to HTML
+      required: true
+      content:
+        text/plain:
+          schema:
+            type: string
+    User:
+      description: Create new user
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+              name:
+                type: string
+              email:
+                type: string
+                format: email
+              description:
+                type: string
+    Category:
+      description: Create new category
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              key:
+                type: string
+              name:
+                type: string
+              rank:
+                type: integer
+                format: int32 >0
+    Feed:
+      description: Create new feed
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              content:
+                type: string
+              url:
+                type: string
+                format: url
+              cover_url:
+                type: string
+                format: url
+
   securitySchemes:
-    rebase_hash:
+    AuthorizationHeaderToken:
       type: apiKey
       name: Authorization
       in: header
