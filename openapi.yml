@@ -48,13 +48,315 @@ tags:
   - name: Feed
     description: microblogging post
 
-paths: {}
+# API Request methods
+paths:
+  /:
+    get:
+      tags:
+        - Misc
+      summary: Api OpenAPI v3.0.0 index
+      operationId: getOpenAPI
+      responses:
+        200:
+          description: Got response
+        404:
+          description: Not supported
+  /markdown:
+    post:
+      tags:
+        - Misc
+      summary: Render a markdown document to HTML
+      operationId: renderMarkdown
+      requestBody:
+        $ref: '#/components/requestBodies/MarkdownRender'
+      responses:
+        200:
+          description: Markdown rendered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rendered:
+                    type: string
+                    format: html
+        422:
+          description: Render failed
+        404:
+          description: Not supported
+  /version:
+    get:
+      tags:
+        - Misc
+      summary: Get server and API version
+      operationId: getVersion
+      responses:
+        200:
+          description: Got versions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiVersion'
+        404:
+          description: Not supported
+  /datastorage:
+    get:
+      tags:
+        - Misc
+      summary: Internal API to get server public datastorage
+      operationId: internalGetStorage
+      responses:
+        200:
+          description: Got datastorage
+          content:
+            application/json:
+              schema:
+                type: object
+        404:
+          description: Not supported
+  /users:
+    post:
+      tags:
+        - User
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      summary: Create a user
+      operationId: createUser
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: New user location
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /authorizations/{username}:
+    get:
+      tags:
+        - User
+      summary: Authorize user
+      operationId: getToken
+      parameters:
+        - name: password
+          in: header
+          description: user password
+          required: true
+          schema:
+            type: string
+        - name: username
+          in: path
+          description: user to login
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Got token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+  /categories/{owner}:
+    get:
+      tags:
+        - Category
+      summary: List categories of someone
+      operationId: listCategoriesOf
+      parameters:
+        - name: owner
+          in: path
+          description: owned user
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      tags:
+        - Category
+      summary: Create a category
+      operationId: createCategory
+      parameters:
+        - name: owner
+          in: path
+          description: owned user
+          schema:
+            type: string
+          required: true
+      requestBody:
+        $ref: '#/components/requestBodies/Category'
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: New category location
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  /categories/{owner}/{category}/feeds:
+    get:
+      tags:
+        - Feed
+      summary: List feeds in a category
+      operationId: getFeeds
+      parameters:
+        - name: last_id
+          in: query
+          description: the last feed id of the feeds
+          allowEmptyValue: true
+          schema:
+            type: string
+            default: ''
+          required: false
+        - name: size
+          in: query
+          description: the size of the feeds, number, default 20
+          schema:
+            type: number
+            format: int32 >= 0
+            default: 20
+          required: false
+          allowEmptyValue: false
+        - name: owner
+          in: path
+          description: Owner
+          schema:
+            type: string
+          required: true
+        - name: category
+          in: path
+          description: Category
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Query OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feed'
+    post:
+      tags:
+        - Feed
+      summary: Create a feed
+      operationId: createFeed
+      requestBody:
+        $ref: '#/components/requestBodies/Feed'
+      parameters:
+        - name: owner
+          in: path
+          description: Owner
+          schema:
+            type: string
+          required: true
+        - name: category
+          in: path
+          description: Category
+          schema:
+            type: string
+          required: true
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: New feed location
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feed'
+  /categories/{owner}/{category}/feeds/{_id}:
+    patch:
+      tags:
+        - Feed
+      summary: Edit a feed
+      operationId: updateFeed
+      parameters:
+        - name: owner
+          in: path
+          description: Owner
+          schema:
+            type: string
+          required: true
+        - name: category
+          in: path
+          description: Category
+          schema:
+            type: string
+          required: true
+        - name: _id
+          in: path
+          description: ID
+          schema:
+            type: string
+            format: integer
+          required: true
+      requestBody:
+        $ref: '#/components/requestBodies/Feed'
+      responses:
+        200:
+          description: OK, changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feed'
+    delete:
+      tags:
+        - Feed
+      summary: Delete a feed
+      operationId: deleteFeed
+      parameters:
+        - name: owner
+          in: path
+          description: Owner
+          schema:
+            type: string
+          required: true
+        - name: category
+          in: path
+          description: Category
+          schema:
+            type: string
+          required: true
+        - name: _id
+          in: path
+          description: ID
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: Deleted
 
 # Rebase Model data
 components:
   schemas:
     # Rebase user model
     User:
+      description: A rebase user can have name, password, email, etc.
       type: object
       properties:
         username:
@@ -77,6 +379,7 @@ components:
 
     # Blogging category
     Category:
+      description: A user can create up to 11 categories, only owner can change categories
       type: object
       properties:
         key:
@@ -91,6 +394,7 @@ components:
 
     # Microblogging post
     Feed:
+      description: By default, all the UGCs are public, but only the owner can publish or change (owned) feeds.
       type: object
       required:
         - title
