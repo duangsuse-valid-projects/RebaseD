@@ -6,6 +6,7 @@
 openapi: 3.0.0
 
 # Added by API Auto Mocking Plugin
+# Testing servcices
 servers:
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/duangsuse/RebaseApi/0.7.2
@@ -14,43 +15,51 @@ servers:
   - description: RebaseD offical service
     url: https://rebase-api.popf.rip/
 
+# External docs
+externalDocs:
+  description: RebaseD Project API document
+  url: https://github.com/duangsuse/RebaseD/blob/master/rebase-api.md
+
 # API Document informations
 info:
+  # Version of this API
   version: '0.7.2'
+  # True open source
   title: Microblogging open API for everyone
   description: 'A RESTful API for everyone. Open Source: https://github.com/duangsuse/RebaseD'
+  # Contact duangsuse
   contact:
     name: duangsuse
     email: fedora-opensuse@outlook.com
     url: https://github.com/duangsuse
+  # Licensed under Apache 2.0
   license:
     name: 'Apache 2.0'
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
 # API Tags
 tags:
-  - name: misc
-    description: Misc APIs
-  - name: user
-    description: Rebase users
-  - name: category
-    description: Categories
-  - name: feed
-    description: Microblogging post
+  - name: Misc
+    description: misc interfaces
+  - name: User
+    description: rebase users
+  - name: Category
+    description: blogging categories
+  - name: Feed
+    description: microblogging post
 
 paths: {}
 
-externalDocs:
-  description: RebaseD Project API document
-  url: https://github.com/duangsuse/RebaseD/blob/master/rebase-api.md
-
+# Rebase Model data
 components:
   schemas:
+    # Rebase user model
     User:
       type: object
       properties:
         username:
           type: string
+          format: simplename
         password:
           type: string
         name:
@@ -60,6 +69,13 @@ components:
           format: email
         description:
           type: string
+        created_at:
+          type: string
+          format: date-time
+        authorization:
+          $ref: '#/components/schemas/AuthToken'
+
+    # Blogging category
     Category:
       type: object
       properties:
@@ -70,8 +86,14 @@ components:
         rank:
           type: integer
           format: int32 >0
+        owner:
+          type: string
+
+    # Microblogging post
     Feed:
       type: object
+      required:
+        - title
       properties:
         title:
           type: string
@@ -98,14 +120,46 @@ components:
           type: string
         _id:
           type: string
+
+    # Auth token result
+    AuthToken:
+      description: Authorization token
+      type: object
+      properties:
+        access_token:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+
+    # API Version
+    ApiVersion:
+      description: Rebase API Version
+      type: object
+      properties:
+        version:
+          type: string
+          format: semver
+        server:
+          type: string
+        server-version:
+          type: string
+
   requestBodies:
+    # Markdown render
     MarkdownRender:
       description: Markdown text to render to HTML
       required: true
       content:
-        text/plain:
+        application/json:
           schema:
-            type: string
+            type: object
+            properties:
+              literal:
+                type: string
+                format: markdown
+
+    # Rebase API user
     User:
       description: Create new user
       required: true
@@ -113,6 +167,7 @@ components:
         application/json:
           schema:
             type: object
+            required: [username, password, name, email, description]
             properties:
               username:
                 type: string
@@ -125,6 +180,8 @@ components:
                 format: email
               description:
                 type: string
+
+    # Blogging category
     Category:
       description: Create new category
       required: true
@@ -132,14 +189,19 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - key
+              - name
             properties:
               key:
                 type: string
               name:
                 type: string
               rank:
-                type: integer
-                format: int32 >0
+                type: number
+                format: int32 >=0
+
+    # Microblogging post
     Feed:
       description: Create new feed
       required: true
@@ -147,6 +209,8 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - title
             properties:
               title:
                 type: string
@@ -158,7 +222,10 @@ components:
               cover_url:
                 type: string
                 format: url
+              category:
+                type: string
 
+  # Rebase API token auth
   securitySchemes:
     AuthorizationHeaderToken:
       type: apiKey

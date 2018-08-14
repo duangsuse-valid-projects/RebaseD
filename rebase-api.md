@@ -62,9 +62,9 @@ GET /
 
 > Return
 
-`text/html`
+`application/json`
 
-Api index
+Api openapi __v3.0.0__ index
 
 ### Markdown 渲染
 
@@ -76,9 +76,15 @@ POST /markdown
 
 name | type | description
 :-- | :-- | :--
-body | string | Markdown
+literal | string | Markdown
 
 > Response
+
+```json
+{
+  "rendered": "..."
+}
+```
 
 Rendered HTML of given markdown
 
@@ -96,8 +102,12 @@ GET /version
 
 > Response
 
-```plain
-0.7.0
+```json
+{
+  "version": "0.7.2",
+  "server": "RebaseD",
+  "server-version": "0.1.0"
+}
 ```
 
 ### 全部数据
