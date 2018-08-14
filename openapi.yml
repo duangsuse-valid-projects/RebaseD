@@ -8,16 +8,16 @@ openapi: 3.0.0
 # Added by API Auto Mocking Plugin
 # Testing servcices
 servers:
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/duangsuse/RebaseApi/0.7.2
   - description: Drakeet.me offical service
     url: https://api.drakeet.com/rebase
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/duangsuse/RebaseApi/0.7.2
   - description: RebaseD offical service
     url: https://rebase-api.popf.rip/
 
 # External docs
 externalDocs:
-  description: RebaseD Project API document
+  description: RebaseD Project API document, markdown version
   url: https://github.com/duangsuse/RebaseD/blob/master/rebase-api.md
 
 # API Document informations
@@ -26,27 +26,76 @@ info:
   version: '0.7.2'
   # True open source
   title: Microblogging open API for everyone
-  description: 'A RESTful API for everyone. Open Source: https://github.com/duangsuse/RebaseD'
+  description: |
+    ## Basics
+    A __RESTful API__ for everyone. Open Source at [duangsuse/RebaseD](https://github.com/duangsuse/RebaseD)
+    All API access is over __HTTPS__. All data is sent and received as __JSON__.
+    ```yaml
+    Content-Type: application/json; charset=utf-8
+    ```
+    All timestamps are returned in __ISO 8601__ format
+    ```plain
+    YYYY-MM-DDTHH:MM:SSZ
+    ```
+
+    ## Author
+    This describes the resources that make up the official Rebase API by [drakeet](https://github.com/drakeet).
+
+    If you have any problems or requests please contact [drakeet](https://github.com/drakeet) or create an issue.
+
+    ## Params
+    Many APIs take optional parameters. For __GET__ requests, any parameters not specified as a __segment in the path__ can be passed as an __HTTP query string__ parameter:
+
+    ```javascript
+    GET https://api.drakeet.com/rebase/categories/drakeet/fun/feeds?size=15&last_id=123
+    ```
+
+    For __POST, PATCH, PUT, and DELETE__ requests, parameters __not included in the URL__ should be __encoded as JSON__ with a `Content-Type` of `application/json`.
+
+    ## Access Tokens
+
+    Access token is required for all __POST, PATCH, PUT, and DELETE__ requests, except for __user registering__.
+
+    Header
+
+    ```yml
+    Authorization: token YOUR-TOKEN
+    ```
+
+    ## Client Errors
+
+    There is only one type of errors on API calls.
+
+    Status __4xx__ Description
+
+    ```json
+    {
+      "error": "Not Found"
+    }
+    ```
+
+
   # Contact duangsuse
   contact:
     name: duangsuse
     email: fedora-opensuse@outlook.com
     url: https://github.com/duangsuse
+
   # Licensed under Apache 2.0
   license:
-    name: 'Apache 2.0'
+    name: 'OpenAPI 3 Specification Licensed under Apache 2.0'
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
 # API Tags
 tags:
   - name: Misc
-    description: misc interfaces
+    description: miscellaneous interfaces
   - name: User
-    description: rebase users
+    description: rebase user operations
   - name: Category
     description: blogging categories
   - name: Feed
-    description: microblogging post
+    description: microblogging post operations
 
 # API Request methods
 paths:
@@ -54,13 +103,25 @@ paths:
     get:
       tags:
         - Misc
-      summary: Api OpenAPI v3.0.0 index
+      summary: Get Rebase API OpenAPI v3.0.0 index
       operationId: getOpenAPI
       responses:
         200:
-          description: Got response
+          description: Got JSON API Tree response
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Fields omitted
         404:
-          description: Not supported
+          description: Not supported by server
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /markdown:
     post:
       tags:
@@ -71,7 +132,7 @@ paths:
         $ref: '#/components/requestBodies/MarkdownRender'
       responses:
         200:
-          description: Markdown rendered
+          description: Markdown rendered as HTML
           content:
             application/json:
               schema:
@@ -80,10 +141,23 @@ paths:
                   rendered:
                     type: string
                     format: html
+                    nullable: false
+                    example: <h1>Hello</h1>
         422:
           description: Render failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         404:
-          description: Not supported
+          description: Server not support markdown render
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /version:
     get:
       tags:
@@ -98,7 +172,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiVersion'
         404:
-          description: Not supported
+          description: Not supported by server
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /datastorage:
     get:
       tags:
@@ -112,15 +193,23 @@ paths:
             application/json:
               schema:
                 type: object
+                description: fields omitted
         404:
-          description: Not supported
+          description: Not supported by server
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /users:
     post:
       tags:
         - User
       requestBody:
         $ref: '#/components/requestBodies/User'
-      summary: Create a user
+      summary: Create a rebase user
       operationId: createUser
       responses:
         201:
@@ -135,6 +224,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /authorizations/{username}:
     get:
       tags:
@@ -143,24 +239,33 @@ paths:
       operationId: getToken
       parameters:
         - name: password
-          in: header
+          in: query
           description: user password
           required: true
           schema:
             type: string
+            example: sa1tedFi$h
         - name: username
           in: path
           description: user to login
           schema:
             type: string
+            example: drakeet
           required: true
       responses:
         200:
-          description: Got token
+          description: Got app token
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthToken'
+        default:
+          description: Auth failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /categories/{owner}:
     get:
       tags:
@@ -173,6 +278,7 @@ paths:
           description: owned user
           schema:
             type: string
+            example: rachel
           required: true
       responses:
         200:
@@ -183,6 +289,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Category'
+        default:
+          description: Query failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
     post:
       tags:
         - Category
@@ -210,6 +323,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Category'
+        default:
+          description: Creation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /categories/{owner}/{category}/feeds:
     get:
       tags:
@@ -224,13 +344,15 @@ paths:
           schema:
             type: string
             default: ''
+            example: '3'
           required: false
         - name: size
           in: query
           description: the size of the feeds, number, default 20
           schema:
-            type: number
-            format: int32 >= 0
+            type: integer
+            format: int32
+            minimum: 0
             default: 20
           required: false
           allowEmptyValue: false
@@ -255,6 +377,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Feed'
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
     post:
       tags:
         - Feed
@@ -268,12 +397,14 @@ paths:
           description: Owner
           schema:
             type: string
+            example: duangsuse
           required: true
         - name: category
           in: path
           description: Category
           schema:
             type: string
+            example: 生活
           required: true
       responses:
         201:
@@ -288,6 +419,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Feed'
+        default:
+          description: Feed creation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /categories/{owner}/{category}/feeds/{_id}:
     patch:
       tags:
@@ -300,12 +438,14 @@ paths:
           description: Owner
           schema:
             type: string
+            example: rikka
           required: true
         - name: category
           in: path
           description: Category
           schema:
             type: string
+            example: dev
           required: true
         - name: _id
           in: path
@@ -313,9 +453,10 @@ paths:
           schema:
             type: string
             format: integer
+            example: '1'
           required: true
       requestBody:
-        $ref: '#/components/requestBodies/Feed'
+        $ref: '#/components/requestBodies/FeedUpdate'
       responses:
         200:
           description: OK, changed
@@ -323,6 +464,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Feed'
+        default:
+          description: Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
     delete:
       tags:
         - Feed
@@ -350,10 +498,28 @@ paths:
       responses:
         204:
           description: Deleted
+        default:
+          description: Failed to delete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 # Rebase Model data
 components:
   schemas:
+    Error:
+      description: Request error description
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: error message
+          example: Failed to open database connection
+          nullable: true
+
     # Rebase user model
     User:
       description: A rebase user can have name, password, email, etc.
@@ -362,15 +528,19 @@ components:
         username:
           type: string
           format: simplename
+          example: fish
         password:
           type: string
+          example: sa1tedFi$h
         name:
           type: string
+          example: Fish
         email:
           type: string
           format: email
         description:
           type: string
+          example: 咸鱼
         created_at:
           type: string
           format: date-time
@@ -384,11 +554,14 @@ components:
       properties:
         key:
           type: string
+          example: main
         name:
           type: string
+          example: 主文件夹
         rank:
           type: integer
-          format: int32 >0
+          format: int32
+          minimum: 0
         owner:
           type: string
 
@@ -401,8 +574,10 @@ components:
       properties:
         title:
           type: string
+          example: 下雨了，一起来写小文章吧
         content:
           type: string
+          example: 就这么写吧 QWQ
         url:
           type: string
           format: url
@@ -420,8 +595,10 @@ components:
           format: date-time
         owner:
           type: string
+          example: drakeet
         category:
           type: string
+          example: 随笔
         _id:
           type: string
 
@@ -429,9 +606,13 @@ components:
     AuthToken:
       description: Authorization token
       type: object
+      required:
+        - access_token
+        - updated_at
       properties:
         access_token:
           type: string
+          example: '01234567'
         updated_at:
           type: string
           format: date-time
@@ -440,15 +621,19 @@ components:
     ApiVersion:
       description: Rebase API Version
       type: object
+      required:
+        - version
       properties:
         version:
           type: string
           format: semver
+          nullable: false
         server:
           type: string
         server-version:
           type: string
 
+# POST Request bodies
   requestBodies:
     # Markdown render
     MarkdownRender:
@@ -458,10 +643,14 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - literal
             properties:
               literal:
                 type: string
                 format: markdown
+                example: '# Hello'
+                nullable: false
 
     # Rebase API user
     User:
@@ -475,15 +664,19 @@ components:
             properties:
               username:
                 type: string
+                example: wang_tiezhu
               password:
                 type: string
+                example: '1234567'
               name:
                 type: string
+                example: 王铁柱
               email:
                 type: string
                 format: email
               description:
                 type: string
+                example: 理工科文艺青年一枚 0_0
 
     # Blogging category
     Category:
@@ -499,11 +692,14 @@ components:
             properties:
               key:
                 type: string
+                example: cat
               name:
                 type: string
+                example: 猫猫
               rank:
-                type: number
-                format: int32 >=0
+                type: integer
+                format: int32
+                minimum: 0
 
     # Microblogging post
     Feed:
@@ -518,8 +714,32 @@ components:
             properties:
               title:
                 type: string
+                example: 一起来写小文章吧！
               content:
                 type: string
+                example: 我们就这么写\n哈哈哈
+              url:
+                type: string
+                format: url
+              cover_url:
+                type: string
+                format: url
+
+    # Microblogging post update
+    FeedUpdate:
+      description: Update feed
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                example: 一起来写小文章吧！
+              content:
+                type: string
+                example: 我们就这么写\n哈哈哈
               url:
                 type: string
                 format: url
@@ -528,6 +748,7 @@ components:
                 format: url
               category:
                 type: string
+                example: 文章
 
   # Rebase API token auth
   securitySchemes:
@@ -535,3 +756,4 @@ components:
       type: apiKey
       name: Authorization
       in: header
+      description: should be started with token <spacer> sequence
