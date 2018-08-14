@@ -20,6 +20,10 @@ shards build
 chmod +x rebased.cr rebased-unit.cr
 ./rebased.cr
 ./rebased-unit.cr
+
+# Package RPM
+cd dist
+make rpm
 ```
 
 ## Rake 使用
@@ -52,11 +56,13 @@ systemctl start rebased
 + [LICENSE](LICENSE) 本项目以 __AGPL-3.0__ 真正开源，欢迎随时 fork
 + [README.md](README.md)
 + [Rakefile](Rakefile) Rake 构建脚本
-+ [rebase-api.md](rebased-api.md) API 文档，已经重新格式化
++ [rebase-api.md](rebase-api.md) API 文档，已经重新格式化
 + [rebased.cr](rebased.cr) 服务程序源代码，真正开源
 + [rebased-unit.cr](rebased-unit.cr) 服务程序测试源代码，也一样开源
 + [rebased.service](rebased.service) 开源默认 Systemd 服务配置
 + [shard.yml](shard.yml) 包管理器配置
++ [openapi.yml](openapi.yml) OpenAPI 3.0.0 标准配置
++ [dist/](dist/) RPM 打包配置
 
 ## API | 网络接口
 

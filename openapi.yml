@@ -22,10 +22,11 @@ info:
   contact:
     name: duangsuse
     email: fedora-opensuse@outlook.com
+    url: https://github.com/duangsuse
   license:
     name: 'Apache 2.0'
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-    
+
 # API Tags
 tags:
   - name: misc
