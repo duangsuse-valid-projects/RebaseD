@@ -564,6 +564,12 @@ components:
           minimum: 0
         owner:
           type: string
+        _id:
+          type: string
+        created_at:
+          type: date-time
+        updated_at:
+          type: date-time
 
     # Microblogging post
     Feed:
