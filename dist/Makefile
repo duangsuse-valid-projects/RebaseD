@@ -1,17 +1,18 @@
-RPM_DIRS = SPECS SOURCES SOURCES/RebaseD
-RPM_ARGS = -ba SPECS/rebased.spec --buildroot SOURCES
+RPM_DIRS = SPECS
+RPM_ARGS = -ba SPECS/rebased.spec
 
-.PHONY: rpm manpage
 rpm:
-	rm -Rf $(RPM_DIRS)
-	mkdir  $(RPM_DIRS)
+	rm -rf $(RPM_DIRS)
+	mkdir $(RPM_DIRS)
 	cp rebased.spec SPECS/
-	cp ../Rakefile ../rebased.cr ../rebased-unit.cr ../shard.yml SOURCES/RebaseD
+	tar -cf ~/rpmbuild/SOURCES/RebaseD ../Rakefile ../rebased.cr ../rebased-unit.cr ../shard.yml
 	rpmbuild $(RPM_ARGS)
 
 manpage:
 	makeinfo --plaintext rebased.tex -o rebased.1
 
 clean:
-	rm -f rebased.1
+	rm -rf rebased.1 ~/rpmbuild/SOURCES/RebaseD
 	rm -rf $(RPM_DIRS)
+
+.PHONY: rpm manpage clean
