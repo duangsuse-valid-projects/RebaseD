@@ -1,11 +1,17 @@
-RPM_DIRS = SPECS
 RPM_ARGS = -ba SPECS/rebased.spec
+SOURCE = ../Rakefile ../rebased.cr ../rebased-unit.cr ../shard.yml
+VERSION = 0.1.0
+SERVER = rebase-server-$(VERSION)
+RPM_DIRS = SPECS $(SERVER)
 
 rpm:
 	rm -rf $(RPM_DIRS)
 	mkdir $(RPM_DIRS)
 	cp rebased.spec SPECS/
-	tar -cf ~/rpmbuild/SOURCES/RebaseD ../Rakefile ../rebased.cr ../rebased-unit.cr ../shard.yml
+	cp $(SOURCE) $(SERVER)
+	mkdir $(SERVER)/dist
+	cp Makefile rebased-version.incl rebased.tex $(SERVER)/dist
+	tar -cf ~/rpmbuild/SOURCES/RebaseD $(SERVER)
 	rpmbuild $(RPM_ARGS)
 
 manpage:
@@ -14,5 +20,6 @@ manpage:
 clean:
 	rm -rf rebased.1 ~/rpmbuild/SOURCES/RebaseD
 	rm -rf $(RPM_DIRS)
+	rm -rf ~/rpmbuild/BUILD/$(SERVER)
 
 .PHONY: rpm manpage clean

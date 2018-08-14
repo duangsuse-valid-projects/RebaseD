@@ -18,7 +18,7 @@ Install rebase-server if you'd like to open a really open source Rebase API serv
 %setup -q
 
 %build
-rake build
+rake build spec
 pushd dist
 make manpage
 cp rebased.1 ..
