@@ -1,0 +1,87 @@
+\input texinfo % TeXinfo document for rebased
+@setfilename rebased.info
+@documentencoding UTF-8
+@settitle Rebased - The NEVER lost source code server
+@include rebased-version.incl
+
+@c Combine indices.
+@synindex cp fn
+@syncodeindex vr fn
+@syncodeindex ky fn
+@syncodeindex pg fn
+@syncodeindex tp fn
+
+@direntry
+* rebased: (rebase-server). The NEVER lost source code Rebased API server.
+@end direntry
+
+@copying
+This manual documents version @value{REBASED_VERSION} of
+@command{rebased}, the never lost source code Rebased HTTP API server.
+
+Copyright (C) 2018
+duangsuse
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the @sc{gnu} Free Documentation License,
+Version 1.2 or any later version published by the Free Software Foundation;
+with no Invariant Sections, with no Front-Cover Texts,
+and with no Back-Cover Texts.
+A copy of the license can be found at
+@url{http://www.gnu.org/licenses/fdl.html} .
+@end quotation
+@end copying
+
+@setchapternewpage off
+
+@titlepage
+@title @sc{gnu} @code{rebased}
+@subtitle a really open source rebase api server
+@subtitle version @value{REBASED_VERSION}
+@author by duangsuse
+@author original api designment by drakeet
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@ifnottex
+@node Top
+@top Rebased API Server
+@insertcopying
+@end ifnottex
+
+@menu
+* Introduction::                Introduction
+* Parameters::                  Parameters
+* Enviromnents::                Enviromnents
+* Testing::                     Testing
+* Reporting bugs::              Reporting bugs
+@end menu
+
+@node Introduction, Top, Top
+@comment node-name, next, previous, up
+@chapter Introduction
+
+@node Parameters, Top, Top
+@comment node-name, next, previous, up
+@chapter Parameters
+
+@node Enviromnents, Top, Top
+@comment node-name, next, previous, up
+@chapter Enviromnents
+
+@node Testing, Top, Top
+@comment node-name, next, previous, up
+@chapter Introduction
+
+@node Reporting bugs, Top
+@chapter Reporting bugs
+
+Email bug reports to @email{fedora-opensuse@@outlook.com}.
+
+GitHub issue tracker can be found at @url{https://github.com/duangsuse/RebaseD/issues}
+
+@contents
+@bye
