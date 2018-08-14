@@ -6,6 +6,7 @@ License: AGPL
 Group: System Environment/Daemons
 Source: https://github.com/duangsuse/RebaseD
 BuildRoot: /var/tmp/%{name}-buildroot
+Packager: duangsuse
 
 %description
 The rebased program allows the user to serve a custom rebase api service.

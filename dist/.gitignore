@@ -1,0 +1,5 @@
+# Server build temp dir
+rebase-server*
+
+# RPM Specs
+SPECS
