@@ -24,8 +24,11 @@ class Process
   #
   # *Return* Child process PID
   def self.spawn!(path)
-    puts "Running #{path}"
+    print "Running #{path}... "
+    start = Time.new
     p = Process.new(path, nil, nil, false, false, Redirect::Inherit, Redirect::Inherit, Redirect::Inherit)
+    print "finished in #{(Time.new - start).nanoseconds} ns"
+    puts
     return p.pid
   end
 end

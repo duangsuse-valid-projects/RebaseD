@@ -14,6 +14,8 @@ See API document at https://github.com/duangsuse/RebaseD/blob/master/README.md
 
 Install rebase-server if you'd like to open a really open source Rebase API server.
 
+%define debug_package %{nil}
+
 %prep
 %setup -q
 
@@ -29,7 +31,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/bin
 mkdir -p $RPM_BUILD_ROOT/usr/man/man1
 
-install -s -m 755 rebased $RPM_BUILD_ROOT/usr/bin/rebased
+install -s -m 755 rebased $RPM_BUILD_ROOT/usr/bin/rebase-server
 install -s -m 755 rebased-unit $RPM_BUILD_ROOT/usr/bin/rebased-unit
 install -m 644 rebased.1 $RPM_BUILD_ROOT/usr/man/man1/rebased.1
 
@@ -38,11 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc COPYING
-
-/usr/bin/rebased
-/usr/bin/rebased-server
-/usr/man/man1/rebased.1
+/usr/bin/rebase-server
+/usr/bin/rebased-unit
+/usr/man/man1/rebased.1.gz
 
 %changelog
 * Tue Aug 14 2018 duangsuse <fedora-opensuse@outlook.com>
