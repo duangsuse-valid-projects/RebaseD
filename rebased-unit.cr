@@ -16,11 +16,17 @@ require "colorize"
 
 # Bad `Process#spawn` workaround
 class Process
-  # An implementation of `Process#spawn`
-  def run(path)
-    Process.fork do
-      Process.exec(path) if File.exists(path)
-    end
+  # An implementation of `Process.singleton_class#spawn`
+  #
+  # Child class using parent process's stdio
+  #
+  # *path* program path
+  #
+  # *Return* Child process PID
+  def self.spawn!(path)
+    puts "Running #{path}"
+    p = Process.new(path, nil, nil, false, false, Redirect::Inherit, Redirect::Inherit, Redirect::Inherit)
+    return p.pid
   end
 end
 
@@ -52,7 +58,7 @@ class RebasedTests
     p = p || @program
     puts "Opening executable file: #{p.colorize(:green)}".colorize.mode(:bright)
     if File.exists?(p)
-      pid = Process.run(p)
+      @pid = Process.spawn!(p)
     else
       abort "Bad file path. Please check again".colorize(:red)
     end
