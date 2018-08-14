@@ -2,6 +2,18 @@
 
 Drakeet 闭源了 Rebase API 服务器，这是与 [SPEC v0.7.2](rebase-api.md) 兼容的替代品
 
+## 为啥又不写了 | Why archived
+
+这个 API 实在是太奇葩了，你们去 [Swagger UI](https://app.swaggerhub.com/apis/duangsuse/RebaseApi/0.7.2) 测试一下
+
+为什么 ID 都是字符串、为什么日期一定非得是某个特殊格式，我自己再写一个得了
+
+后端的服务器实在是太智障了，居然自己不处理部分验证错误，而且有些 API 没法用，API 文档不更新，和 Telegram 不更新客户端源码一个德行，果断差评
+
+后端是 Express 这单线程处理的玩意，操作系统居然用 Ubuntu Server... 等等等等
+
+懒得给这闭源蹩脚的 API 写服务器了，差评差评差评，浪费我一天实现给写 OpenAPI
+
 ## 构建 | Building
 
 ```bash
