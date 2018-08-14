@@ -9,8 +9,11 @@
 
 task default: :build
 task build: :shards
+task run: :build
 task shards: %w[shard.yml shard.lock]
 task 'shards.lock': %w[shard.yml]
+task spec: :check
+task test: :check
 
 # Crystal compiler
 def crystalc(file)
@@ -53,4 +56,48 @@ end
 task :check do
   crystalc 'rebased-unit.cr'
   sh './rebased-unit'
+end
+
+# Build shards
+task :'shards-build' do
+  sh 'shards build'
+end
+
+public
+# Sudo sh command
+def sudosh(command, *commands, &block)
+  list = [command] + commands
+  list.map! do |c|
+    "sudo #{c}"
+  end
+
+  send(:sh, *list) &block
+end
+
+# Systemd config path
+def systemd_path
+  '/lib/systemd/system/'
+end
+
+# Install program
+task :install do
+  sudosh "cp rebased.service #{systemd_path}"
+  sudosh 'install -Dm755 rebased /root'
+end
+
+# Remove program
+task :uninstall do
+  sudosh "rm -f #{systemd_path}/rebased.service"
+  sudosh 'rm -f /root/rebased'
+end
+
+# Start program
+task :start do
+  sudosh 'systemctl start rebased'
+  sudosh 'systemctl status rebased'
+end
+
+# Run server
+task :run do
+  sh './rebased'
 end
